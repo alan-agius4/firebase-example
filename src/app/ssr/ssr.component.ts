@@ -7,7 +7,7 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { lastValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-ssr',
@@ -30,8 +30,10 @@ export class SsrComponent {
       this.date.nativeElement.innerText = new Date();
     }
 
-    lastValueFrom(
-      this.http.get<{ uuid: string }>('https://httpbin.org/uuid')
+    firstValueFrom(
+      this.http.get<{ uuid: string }>('https://httpbin.org/uuid', {
+        transferCache: false,
+      })
     ).then(({ uuid }) => {
       if (this.uuid) {
         this.uuid.nativeElement.innerText = uuid;

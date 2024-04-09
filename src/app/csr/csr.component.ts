@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
-import { lastValueFrom } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-csr',
@@ -11,13 +11,15 @@ import { lastValueFrom } from 'rxjs';
   styleUrl: './csr.component.scss',
 })
 export class CsrComponent {
-  now = Date.now();
+  now = new Date();
   uuid = '';
 
   constructor() {
     const http = inject(HttpClient);
-    lastValueFrom(http.get<{ uuid: string }>('https://httpbin.org/uuid')).then(
-      ({ uuid }) => (this.uuid = uuid)
-    );
+    firstValueFrom(
+      http.get<{ uuid: string }>('https://httpbin.org/uuid', {
+        transferCache: false,
+      })
+    ).then(({ uuid }) => (this.uuid = uuid));
   }
 }
